@@ -6,6 +6,12 @@ platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
+build = "rattler-build build --recipe-dir ./recipes -m variant_configuration.yaml -c conda-forge -c nmarticorena  --skip-existing"
+
+[tasks.build_one]
+cmd = "rattler-build build --recipe-dir ./recipes/{{ name }} -m variant_configuration.yaml -c conda-forge -c nmarticorena  --skip-existing"
+description = "Build a single package from the recipes directory. Usage: pixi build_one --name <package_name>"
+args = [{"arg" = "name"}]
 
 [dependencies]
 rattler-build = ">=0.55.1,<0.56"
