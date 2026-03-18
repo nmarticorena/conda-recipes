@@ -7,6 +7,8 @@ version = "0.1.0"
 
 [tasks]
 build = "rattler-build build --recipe-dir ./recipes -m variant_configuration.yaml -c conda-forge -c nmarticorena  --skip-existing"
+upload_all = "bash upload.sh"
+update_recipe = "python3 update_sha256.py"
 
 [tasks.build_one]
 cmd = "rattler-build build --recipe-dir ./recipes/{{ name }} -m variant_configuration.yaml -c conda-forge -c nmarticorena  --skip-existing"
@@ -15,3 +17,4 @@ args = [{"arg" = "name"}]
 
 [dependencies]
 rattler-build = ">=0.55.1,<0.56"
+anaconda-client = ">=1.14.1,<2"

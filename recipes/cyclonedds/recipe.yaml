@@ -1,0 +1,70 @@
+context:
+  name: cyclonedds
+  version: 0.10.2
+
+package:
+  name: "${{ name }}"
+  version: "${{ version }}"
+
+source:
+  url: "https://github.com/eclipse-cyclonedds/cyclonedds/archive/${{ version }}.tar.gz"
+  sha256: bc84e137e0c8a055b8cd97fbeafec94e36de1b0c2e88800896a82384fd867ae5
+
+build:
+  number: 0
+  script:
+    - if: win
+      then: |
+        cmake -G "Ninja" ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DCMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP=True ^
+            -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
+            %SRC_DIR%
+        cmake --build . --config Release --target install
+      else: |
+        cmake -G "Ninja" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP=True \
+            -DCMAKE_INSTALL_PREFIX=$PREFIX \
+            $SRC_DIR
+        cmake --build . --config Release --target install
+
+requirements:
+  build:
+    - "${{ compiler('cxx') }}"
+    - "${{ compiler('c') }}"
+    - "${{ stdlib('c') }}"
+    - cmake
+    - maven
+    - openjdk
+    - ninja
+  host:
+    - openssl
+  run_exports:
+     - ${{ pin_subpackage('cyclonedds', upper_bound='x.x.x') }}
+
+
+tests:
+  - package_contents:
+      lib:
+        - ddsc
+      include:
+        - ddsc/dds.h
+
+about:
+  homepage: https://github.com/eclipse-cyclonedds/cyclonedds
+  license: EPL-2.0
+  license_file: LICENSE
+  summary: Eclipse Cyclone DDS
+  description: |
+    Eclipse Cyclone DDS is a very performant and robust open-source implementation of the OMG DDS specification.
+    Cyclone DDS is developed completely in the open as an Eclipse IoT project (see eclipse-cyclone-dds)
+    with a growing list of adopters (if you're one of them, please add your logo).
+    It is a tier-1 middleware for the Robot Operating System ROS 2.
+  documentation: https://projects.eclipse.org/projects/iot.cyclonedds
+  repository: https://github.com/eclipse-cyclonedds/cyclonedds
+
+extra:
+  recipe-maintainers:
+    - seanyen
+    - phreed

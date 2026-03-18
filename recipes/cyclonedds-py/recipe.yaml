@@ -1,0 +1,30 @@
+context:
+  name: cyclonedds-py
+  version: "0.10.2"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  - url: https://github.com/eclipse-cyclonedds/cyclonedds-python/archive/refs/tags/${{ version }}.zip
+    sha256: 22536b5070c5ac09877db6475feaa203ece04cf5a240d9ff4c21fa9d8a40db39
+
+
+
+
+build:
+  skip:
+    - win
+    - osx
+  number: 1
+
+requirements:
+  build:
+    - ${{ compiler('cxx') }}
+    - sysroot_linux-64 2.28.*
+  host:
+    - cyclonedds
+    - python
+    - pip
+    - rich-click
