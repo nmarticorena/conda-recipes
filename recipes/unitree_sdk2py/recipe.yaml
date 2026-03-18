@@ -5,7 +5,7 @@ package:
     version: ${{version}}
 source:
   - git: https://github.com/nmarticorena/unitree_sdk2_python.git
-    rev: d793c5ce111c8c9eb8ec8a2cbc96b25ca0ca5bc2
+    rev: f7a1961b25d404dcd76956619563ca40a4ab2ea9
 
 
 
@@ -14,7 +14,7 @@ build:
   skip:
     - win
     - osx
-  number: 5
+  number: 8
   script:
       - pip install . -v
 
@@ -30,6 +30,10 @@ requirements:
     - cyclonedds ==0.10.2
     - numpy
 
+# tests:
+#   - package_contents:
+#       files:
+#           - utils/lib/crc_amd64.so # Not working but is actually added
 
 extra:
   recipe-maintainers:
