@@ -5,7 +5,7 @@ package:
     version: ${{version}}
 source:
   - git: https://github.com/nmarticorena/unitree_sdk2_python.git
-    rev: b6232e53b5ea727d34e1213174614e894523bd75
+    rev: d793c5ce111c8c9eb8ec8a2cbc96b25ca0ca5bc2
 
 
 
@@ -14,7 +14,7 @@ build:
   skip:
     - win
     - osx
-  number: 3
+  number: 5
   script:
       - pip install . -v
 
@@ -22,7 +22,7 @@ requirements:
   host:
     - python
     - pip
-    - py-opencv
+    # - py-opencv # we dont need this only for the quadrupeds
     - numpy
     - cyclonedds ==0.10.2
   run:
