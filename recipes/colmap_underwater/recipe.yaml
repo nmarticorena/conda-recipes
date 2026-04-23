@@ -1,0 +1,162 @@
+# Prioritize gpu build if cudatoolkit can be installed (through __cuda virtual package)
+schema_version: 1
+
+context:
+  name: colmap-underwater
+  version: "4.0.3"
+  build_number: 0
+
+  cuda: ${{ "enabled" if cuda_compiler_version != "None" else "disabled" }}
+  cuda_build_string: cuda_${{ cuda_compiler_version | version_to_buildstring }}
+  string_prefix: ${{ cuda_build_string if cuda ==  "enabled" else "cpu_" }}
+
+package:
+  name: ${{ name }}
+  version: ${{ version }}
+
+source:
+  - git: https://cau-git.rz.uni-kiel.de/inf-ag-koeser/colmap_underwater.git
+    rev: 5b73ae1a61856c4e712908a353c951a1ba2bc748
+
+build:
+  number: ${{ build_number }}
+  string: ${{ string_prefix }}h${{ hash }}_${{ build_number }}
+  variant:
+    use_keys:
+      # use cuda from the variant config, e.g. to build multiple CUDA variants
+      - ${{ "cuda" if cuda == "enabled" }}
+    # this will down-prioritize the cpu variant versus other variants of the package
+    down_prioritize_variant: ${{ 0 if cuda == "enabled" else 1 }}
+  script:
+    file: build
+    env:
+      package_version: ${{ version }}
+
+requirements:
+  build:
+    - ${{ compiler('cxx') }}
+    - ${{ compiler('c') }}
+    - ${{ stdlib("c") }}
+    - if: cuda == "enabled"
+      then: ${{ compiler('cuda') }}
+    - cmake
+    - if: unix
+      then: make
+    - pkg-config
+    - ninja
+    - if: osx
+      then: llvm-openmp
+    - if: linux
+      then: libgomp
+    - if: win
+      then: m2-sed
+  host:
+    - if: unix
+      then:
+        - xorg-libxext
+        - xorg-libxdmcp
+        - xorg-libxau
+        - libxcb
+        - xorg-libxfixes
+        - xorg-libxrender
+        - xorg-libx11
+        - xorg-libice
+        - xorg-libsm
+    - if: linux
+      then:
+        - libglu
+        - libgl-devel
+        - libopengl-devel
+    - libblas
+    - libcblas
+    - libboost-devel
+    - suitesparse
+    - eigen
+    - eigen-abi-devel
+    - freeimage
+    - glog
+    - gflags
+    - glew
+    - cgal-cpp
+    - ceres-solver
+    - if: cuda == "enabled"
+      then: ceres-solver * [build="gpu*"]
+    - qt-main
+    - git
+    - flann
+    - sqlite
+    - if: unix
+      then:
+        - vlfeat
+        - gmp
+    - lz4-c
+    - metis
+    - openimageio
+    - poselib
+    - faiss
+    - if: cuda == "enabled"
+      then:
+        - libcurand-dev
+        - cuda-cudart-dev
+        - cuda-version ==${{ cuda_compiler_version }}
+        - faiss-gpu
+    - if: osx
+      then: llvm-openmp
+    - if: linux
+      then: libgomp
+    - if: not (osx and x86_64)
+      then:
+        - onnxruntime
+        - onnxruntime-cpp
+  run:
+    - flann
+    - if: cuda == "enabled"
+      then:
+        - __cuda >=${{ cuda_compiler_version }}  # needed to ensure cuda packages are only installed in cuda environments and fallback to cpu builds otherwise
+    - if: unix
+      then:
+        - xorg-libxext
+        - xorg-libxdmcp
+        - xorg-libxau
+        - libxcb
+        - xorg-libxfixes
+        - xorg-libxrender
+        - xorg-libx11
+        - xorg-libice
+        - xorg-libsm
+        - vlfeat
+    - if: linux
+      then: libglu
+  run_exports:
+    - ${{ pin_subpackage('colmap-underwater', upper_bound='x.x') }}
+
+tests:
+  - script:
+      - if: win
+        then:
+          - if exist %PREFIX%\\Library\\bin\\colmap.exe (exit 0) else (exit 1)
+          - if exist %PREFIX%\\Library\\lib\\colmap_exe.lib (exit 0) else (exit 1)
+          - if: cuda == "enabled"
+            then: if exist %PREFIX%\\Library\\lib\\colmap_cuda.lib (exit 0) else (exit 1)
+      - if: unix
+        then:
+          - test -f $PREFIX/bin/colmap
+          - test -f $PREFIX/lib/libcolmap_exe.a
+          - test -f $PREFIX/share/colmap/colmap-config.cmake
+          - if: cuda == "enabled"
+            then: test -f $PREFIX/lib/libcolmap_util_cuda.a
+
+about:
+  license: BSD-3-Clause
+  license_file:
+    - COPYING.txt
+    - src/thirdparty/LSD/LICENSE
+    - src/thirdparty/PoissonRecon/LICENSE
+    - src/thirdparty/SiftGPU/LICENSE
+    - src/thirdparty/VLFeat/LICENSE
+  summary: COLMAP is a general-purpose Structure-from-Motion (SfM) and Multi-View Stereo (MVS) pipeline with a graphical and command-line interface.
+  homepage: https://colmap.github.io/
+
+extra:
+  recipe-maintainers:
+    - Tobias-Fischer
