@@ -1,0 +1,97 @@
+context:
+  name: lingbotmap-vslamlab
+  version: "1.0"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  - git: https://github.com/Robbyant/lingbot-map
+    rev: 1f76533
+
+build:
+  number: 0
+  skip: win or cuda_compiler == "None" or cuda_compiler_version != "12.8"
+  script:
+   - python -m pip install . --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python = 3.11
+    - setuptools
+    - pip
+    - cuda-version ==${{ cuda_compiler_version }}
+    - pytorch-gpu
+    - torchvision
+    - nmarticorena:flashinfer
+
+
+
+requirements:
+  host:
+       - cuda-cudart-dev
+    - cuda-crt
+    - libcusparse-dev
+    - cuda-driver-dev
+    - cuda-nvcc
+    - cuda-nvrtc-dev
+    - cuda-nvtx
+    - cuda-nvtx-dev
+    - cuda-nvml-dev
+    - cuda-profiler-api
+    # CUDA Libraries
+    - cudnn
+    - libcublas-dev
+    - libcudss-dev
+    - libcufile-dev
+    - libcufft-dev
+    - libcurand-dev
+    - libcusolver-dev
+    - cusparselt
+    - libnvjitlink
+    # Torch libraries
+    - pytorch-gpu
+    - fontan::lietorch
+    - pandas
+    - eigen
+    - moderngl
+    - moderngl-window == 3.1.1
+    - torchvision
+    - tensorboard
+    - opencv
+  run:
+    - python=3.11
+    - pytorch-gpu
+    - tqdm
+    - open3d
+    - scipy
+    - opencv
+    - suitesparse
+    - matplotlib
+    - pyyaml
+    - huggingface_hub
+    - torch-scatter
+    - fontan::lietorch
+    - pandas
+    - eigen
+    - moderngl
+    - moderngl-window == 3.1.1
+    - torchvision
+    - tensorboard
+
+
+about:
+  license: Apache-2.0
+  license_file: LICENSE
+  summary: Deep Visual SLAM for Monocular, Stereo, and RGB-D Cameras
+  description: |
+    This repo currently provides a single GPU implementation of our monocular, stereo, and RGB-D SLAM systems. It currently contains demos, training, and evaluation scripts.
+  homepage: https://github.com/princeton-vl/DROID-SLAM
+
+extra:
+  authors:
+    - Zachary Teed
+    - Jia Deng
+  recipe-maintainers:
+    - fontan
