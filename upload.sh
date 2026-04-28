@@ -1,4 +1,4 @@
 for file in output/**/*.conda; do
-    binstar upload -u nmarticorena $file || true
+    rattler-build upload anaconda -v -o nmarticorena $file || true
 done
 
