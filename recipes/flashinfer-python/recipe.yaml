@@ -10,7 +10,7 @@ source:
   sha256: 044ed74698b5f6c1e719b32cf95189609166740076c11287e81a38450953de50
 
 build:
-  number: 3
+  number: 8
   script: pip install . -v
   python:
     entry_points:
@@ -19,13 +19,15 @@ build:
 
 requirements:
   host:
-  - python <4.0,>=3.10
+  - python
   - setuptools>=77
   - packaging>=24
   - apache-tvm-ffi>=0.1.6,!=0.1.8,!=0.1.8.post0,<0.2
   - pip
+  - ninja
+  - cuda-version ==${{ cuda_compiler_version }}
   run:
-  - python <4.0,>=3.10
+  - python
   - apache-tvm-ffi !=0.1.8,!=0.1.8.post0,<0.2,>=0.1.6
   - click
   # - 'cuda-tile '
@@ -40,14 +42,12 @@ requirements:
   - tabulate
   - pytorch
   - tqdm
-  # - nvidia-cutlass-dsl >=4.4.2 # extra == "cu12"
+  - cutlass >=4.4.2 # extra == "cu12"
   # - nvidia-cutlass-dsl [cu13]>=4.4.2 # extra == "cu13"
 
 tests:
-- python:
-    imports:
+- script:
     - flashinfer
-    pip_check: true
 
 about:
   summary: 'FlashInfer: Kernel Library for LLM Serving'

@@ -8,90 +8,50 @@ package:
 
 source:
   - git: https://github.com/Robbyant/lingbot-map
-    rev: 1f76533
+    rev: 1f765332f3d884925e334aa10a8e88fbf533c234
 
 build:
-  number: 0
-  skip: win or cuda_compiler == "None" or cuda_compiler_version != "12.8"
+  number: 1
+  skip: win or cuda_compiler == "None" or cuda_compiler_version != "12.9"
   script:
    - python -m pip install . --no-deps --no-build-isolation
 
 requirements:
   host:
-    - python = 3.11
+    - python
     - setuptools
     - pip
     - cuda-version ==${{ cuda_compiler_version }}
     - pytorch-gpu
     - torchvision
-    - nmarticorena:flashinfer
-
-
-
-requirements:
-  host:
-       - cuda-cudart-dev
-    - cuda-crt
-    - libcusparse-dev
-    - cuda-driver-dev
-    - cuda-nvcc
-    - cuda-nvrtc-dev
-    - cuda-nvtx
-    - cuda-nvtx-dev
-    - cuda-nvml-dev
-    - cuda-profiler-api
-    # CUDA Libraries
-    - cudnn
-    - libcublas-dev
-    - libcudss-dev
-    - libcufile-dev
-    - libcufft-dev
-    - libcurand-dev
-    - libcusolver-dev
-    - cusparselt
-    - libnvjitlink
-    # Torch libraries
-    - pytorch-gpu
-    - fontan::lietorch
-    - pandas
-    - eigen
-    - moderngl
-    - moderngl-window == 3.1.1
-    - torchvision
-    - tensorboard
+    - nmarticorena:flashinfer-python
+    - pillow
+    - einops
+    - safetensors
     - opencv
+    - tqdm
+    - scipy
   run:
-    - python=3.11
+    - python 
     - pytorch-gpu
     - tqdm
-    - open3d
     - scipy
-    - opencv
-    - suitesparse
-    - matplotlib
-    - pyyaml
     - huggingface_hub
-    - torch-scatter
-    - fontan::lietorch
-    - pandas
-    - eigen
-    - moderngl
-    - moderngl-window == 3.1.1
-    - torchvision
-    - tensorboard
+    - viser
+    - trimesh
+    - onnxruntime
+    - matplotlib
+    - requests
 
 
 about:
   license: Apache-2.0
-  license_file: LICENSE
-  summary: Deep Visual SLAM for Monocular, Stereo, and RGB-D Cameras
-  description: |
-    This repo currently provides a single GPU implementation of our monocular, stereo, and RGB-D SLAM systems. It currently contains demos, training, and evaluation scripts.
-  homepage: https://github.com/princeton-vl/DROID-SLAM
+  license_file: LICENSE.txt
+  summary: A feed-forward 3D foundation model for reconstructing scenes from streaming data
+  homepage: https://github.com/Robbyant/lingbot-map
 
 extra:
   authors:
-    - Zachary Teed
-    - Jia Deng
+    - Lin-Zhuo Chen
   recipe-maintainers:
-    - fontan
+    - nmarticorena
